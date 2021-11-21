@@ -53,4 +53,40 @@ class QuestionController {
         questions.add(question)
         return ResponseEntity(question, HttpStatus.CREATED)
     }
+
+    @GetMapping("{id}")
+    fun show(@PathVariable id: UUID): ResponseEntity<Question> {
+        val question = getQuestion(id)
+        return ResponseEntity.ok(question)
+    }
+
+    @PutMapping("{id}")
+    fun update(@PathVariable id: UUID, @RequestBody questionReq: QuestionReq): ResponseEntity<Question> {
+        val question = getQuestion(id)
+        val category = categories.firstOrNull { it.id == questionReq.categoryId }
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found")
+
+        val updatedQuestion = question.copy(
+            category = category,
+            text = questionReq.text,
+            answer = questionReq.answer,
+            score = questionReq.score
+        )
+
+        questions.remove(question)
+        questions.add(updatedQuestion)
+        return ResponseEntity.ok(updatedQuestion)
+    }
+
+    @DeleteMapping("{id}")
+    fun delete(@PathVariable id: UUID): ResponseEntity<Question> {
+        val question = getQuestion(id)
+        questions.remove(question)
+        return ResponseEntity.noContent().build()
+    }
+
+    private fun getQuestion(id: UUID): Question {
+        return questions.firstOrNull { it.id == id }
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found")
+    }
 }
