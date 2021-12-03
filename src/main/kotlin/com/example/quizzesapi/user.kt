@@ -22,9 +22,7 @@ data class User(
     val id: UUID = UUID.randomUUID(),
     val name: String,
     val email: String,
-    val active: Boolean = true,
-    @OneToMany
-    val quizzes: List<Quiz> = emptyList()
+    val active: Boolean = true
 )
 
 interface UserRepository : JpaRepository<User, UUID> {
