@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.*
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.OneToMany
 import javax.persistence.Table
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -21,7 +22,9 @@ data class User(
     val id: UUID = UUID.randomUUID(),
     val name: String,
     val email: String,
-    val active: Boolean = true
+    val active: Boolean = true,
+    @OneToMany
+    val quizzes: List<Quiz> = emptyList()
 )
 
 interface UserRepository : JpaRepository<User, UUID> {
